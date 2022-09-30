@@ -18,6 +18,19 @@ paths:
               schema:
                 type: object
 
+  /health:
+    get:
+      responses:
+        200:
+          description: Returns OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+
   /ping:
     post:
       operationId: pingBody
