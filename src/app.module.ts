@@ -10,7 +10,10 @@ import { PingController } from './ping/ping.controller';
 @Module({
   imports: [],
   controllers: [AppController, PingController],
-  providers: [AppService, { provide: APP_FILTER, useClass: OpenApiExceptionFilter }],
+  providers: [
+    AppService,
+    { provide: APP_FILTER, useClass: OpenApiExceptionFilter },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
