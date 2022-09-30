@@ -30,12 +30,8 @@ const getGithubHeaders = () => {
 @Controller()
 export class GithubController {
   @Get('/api/v1/github/:owner/:repo/issue/:issue_number')
-  public async getIssue(
-    @Param('owner') owner: string,
-    @Param('repo') repo: string,
-    @Param('issue_number') issue_number: number,
-  ) {
-    const url = `${process.env.GITHUB_URL}/repos/${owner}/${repo}/issues/${issue_number}`;
+  public async getIssue(@Param() params) {
+    const url = `${process.env.GITHUB_URL}/repos/${params.owner}/${params.repo}/issues/${params.issue_number}`;
     const options: AxiosRequestConfig = {
       method: 'GET',
       headers: getGithubHeaders(),
