@@ -1,0 +1,19 @@
+{
+    "rest-client.defaultHeaders": {
+        "User-Agent": "vscode-restclient",
+        "Accept-Language": "en"
+    },
+    "rest-client.environmentVariables": {
+        "$shared": {},
+        "localhost": {
+            "baseUrl": "http://localhost:3000",
+        },
+        "dev": {
+            "repo": "troyatomic/expressjs-typescript",
+            "baseUrl": "https://api.github.com",
+        },
+        "test": {
+            "baseUrl": "https://sentrikey-access-api-test.sentrilock.com",
+        }
+    }
+}

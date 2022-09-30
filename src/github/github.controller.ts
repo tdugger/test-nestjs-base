@@ -63,4 +63,24 @@ export class GithubController {
     const hasImage = stringContainImgTag(issue.body);
     return { containsImage: hasImage };
   }
+
+  @Post('/api/v1/github/:owner/:repo/issue/:issue_number/comment')
+  public async postComment(@Param() params, @Body() comment) {
+    const url = `${process.env.GITHUB_URL}/repos/${params.owner}/${params.repo}/issues/${params.issue_number}/comments`;
+    console.log('url', url);
+    console.log('bodytext', comment);
+    const options: AxiosRequestConfig = {
+      method: 'POST',
+      headers: getGithubHeaders(),
+      data: comment,
+      url,
+    };
+    const response = await axios(options);
+    console.log('status', response.status);
+    if (response.status < 400) {
+      return { success: true };
+    } else {
+      return { success: false };
+    }
+  }
 }

@@ -1,0 +1,29 @@
+###
+# localhost health
+GET {{baseUrl}}/health
+
+###
+# localhost get issue
+GET {{baseUrl}}/api/v1/github/troyatomic/expressjs-typescript/issue/2
+
+###
+# localhost image
+GET {{baseUrl}}/api/v1/github/troyatomic/expressjs-typescript/issue/2/image
+
+###
+# localhost comment
+POST {{baseUrl}}/api/v1/github/troyatomic/expressjs-typescript/issue/2/comment
+Content-Type: application/json
+
+{
+ "body": "hi joe"   
+}
+
+###
+# localhost identify
+POST {{baseUrl}}/api/v1/github/troyatomic/expressjs-typescript/issue/2/identify
+Content-Type: application/json
+
+{
+ "body": "I found an image in your issue at"   
+}

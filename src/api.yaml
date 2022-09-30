@@ -125,3 +125,44 @@ paths:
                 properties:
                   containsImage:
                     type: boolean
+
+  /api/v1/github/{owner}/{repo}/issue/{issue_number}/comment:
+    parameters:
+      - name: owner
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: repo
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: issue_number
+        in: path
+        required: true
+        schema:
+          type: number
+    post:
+      operationId: github
+      requestBody:
+        description: body contains comment to post
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+
+      responses:
+        201:
+          description: Returns true if the body of the issue contains an image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
