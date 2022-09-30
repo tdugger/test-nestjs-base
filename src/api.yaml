@@ -155,14 +155,53 @@ paths:
               properties:
                 body:
                   type: string
-
       responses:
         201:
-          description: Returns true if the body of the issue contains an image
+          description: Returns true if comment succesfully added
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   success:
+                    type: boolean
+
+  /api/v1/github/{owner}/{repo}/issue/{issue_number}/identify:
+    parameters:
+      - name: owner
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: repo
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: issue_number
+        in: path
+        required: true
+        schema:
+          type: number
+    post:
+      operationId: github
+      requestBody:
+        description: body contains comment to add to issue if contains image
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+      responses:
+        201:
+          description: Returns true if the body of the issue contains an image and comment added succesfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: boolean

@@ -35,31 +35,39 @@ const stringContainImgTag = (issueBody: string): boolean => {
   return hasImage;
 };
 
+const getGithubIssue = async (url: string): Promise<Issue> => {
+  const options: AxiosRequestConfig = {
+    method: 'GET',
+    headers: getGithubHeaders(),
+    url,
+  };
+  const response = await axios(options);
+  return response.data as Issue;
+};
+
+const addGithubComment = (url: string, comment: string): AxiosPromise => {
+  const options: AxiosRequestConfig = {
+    method: 'POST',
+    headers: getGithubHeaders(),
+    data: { body: comment },
+    url,
+  };
+  return axios(options);
+};
+
 @Controller()
 export class GithubController {
   @Get('/api/v1/github/:owner/:repo/issue/:issue_number')
   public async getIssue(@Param() params) {
     const url = `${process.env.GITHUB_URL}/repos/${params.owner}/${params.repo}/issues/${params.issue_number}`;
-    const options: AxiosRequestConfig = {
-      method: 'GET',
-      headers: getGithubHeaders(),
-      url,
-    };
-    const response = await axios(options);
-    const issue: Issue = response.data as Issue;
+    const issue = await getGithubIssue(url);
     return { id: issue.id, title: issue.title, body: issue.body };
   }
 
   @Get('/api/v1/github/:owner/:repo/issue/:issue_number/image')
   public async doesIssueHaveImage(@Param() params) {
     const url = `${process.env.GITHUB_URL}/repos/${params.owner}/${params.repo}/issues/${params.issue_number}`;
-    const options: AxiosRequestConfig = {
-      method: 'GET',
-      headers: getGithubHeaders(),
-      url,
-    };
-    const response = await axios(options);
-    const issue: Issue = response.data as Issue;
+    const issue = await getGithubIssue(url);
     const hasImage = stringContainImgTag(issue.body);
     return { containsImage: hasImage };
   }
@@ -67,14 +75,25 @@ export class GithubController {
   @Post('/api/v1/github/:owner/:repo/issue/:issue_number/comment')
   public async postComment(@Param() params, @Body() comment) {
     const url = `${process.env.GITHUB_URL}/repos/${params.owner}/${params.repo}/issues/${params.issue_number}/comments`;
-    const options: AxiosRequestConfig = {
-      method: 'POST',
-      headers: getGithubHeaders(),
-      data: comment,
-      url,
-    };
-    const response = await axios(options);
+    const response = await addGithubComment(url, comment.body);
     const success = response.status < 400 ? true : false;
     return { success };
+  }
+
+  @Post('/api/v1/github/:owner/:repo/issue/:issue_number/identify')
+  public async postCommentIfImage(@Param() params, @Body() comment) {
+    const url = `${process.env.GITHUB_URL}/repos/${params.owner}/${params.repo}/issues/${params.issue_number}`;
+    const issue = await getGithubIssue(url);
+    let success = false;
+    if (stringContainImgTag(issue.body)) {
+      const commentUrl = `${process.env.GITHUB_URL}/repos/${params.owner}/${params.repo}/issues/${params.issue_number}/comments`;
+      const date = new Date();
+      const newComment = `${comment.body} ${date.toString()}`;
+      const response = await addGithubComment(commentUrl, newComment);
+      success = response.status < 400 ? true : false;
+      return { success };
+    } else {
+      return { success };
+    }
   }
 }
